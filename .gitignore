@@ -1,70 +1,25 @@
+# Virtual environment
 .venv/
-venv/
+
+# Uploads & generated media
+uploads/
+static/uploads/
+*.mp4
+*.avi
+*.mov
+
+# Generated images
+crops/
+*.jpg
+*.png
+
+# Generated text files
+timestamps*.txt
+
+# Logs & cache
 __pycache__/
-*.pyc
-.env
-.env.*
-node_modules/
-.DS_Store
-.vscode/
-.idea/
 *.log
-*.sqlite3
-dashcam.db
-*.db
-*.db-journal
-best.pt
-*.pt
-*.h5
-*.ckpt
-*.onnx
-forensic_report.pdf
-test_report.pdf
-uploads/forensic_report.pdf
-uploads/*.pdf
-static/crops/
-uploads/*.jpg
-uploads/*.jpeg
-uploads/*.png
-*.zip
-*.tar.gz
-*.egg-info/
-.Python
 
-# Python virtualenv
-pip-wheel-metadata/
-
-# Mac
-*.DS_Store
-
-# Windows
+# OS files
+.DS_Store
 Thumbs.db
-
-# JetBrains
-.idea/
-
-# Coverage
-.coverage
-htmlcov/
-
-# MyPy
-.mypy_cache/
-
-# pyenv
-.python-version
-
-# pytest
-.cache/
-
-# Ignore wheel build artifacts
-dist/
-build/
-
-# Ignore compiled extensions
-*.so
-
-# Ignore reports
-*.pdf
-
-# Ensure git doesn't ignore this repo settings file
-!.gitignore
