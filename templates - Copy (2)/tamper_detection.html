@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🔍 Tamper Detection</title>
+  <style>
+    body { background:#1e1e2f; color:white; font-family:Arial,sans-serif; }
+    .container { max-width:900px; margin:30px auto; background:#2c2f3a; padding:20px; border-radius:12px; }
+    h2 { text-align:center; color:#ffcc00; }
+    table { width:100%; border-collapse:collapse; margin-top:20px; }
+    th, td { padding:10px; border-bottom:1px solid #444; text-align:center; }
+    th { background:#007bff; }
+    .btn { padding:6px 12px; border-radius:8px; text-decoration:none; font-weight:bold; }
+    .btn-blue { background:#007bff; color:white; }
+    .btn-blue:hover { background:#0066d6; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔍 Tamper Detection</h2>
+    <table>
+      <tr>
+        <th>Filename</th>
+        <th>Size</th>
+        <th>Uploaded At</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+      {% for video in videos %}
+      <tr>
+        <td>{{ video.filename }}</td>
+        <td>{{ video.size }}</td>
+        <td>{{ video.uploaded_at }}</td>
+        <td>{{ video.status }}</td>
+        <td>
+          <a href="{{ url_for('tamper_details', filename=video.filename) }}" class="btn btn-blue">🔍 Details</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    <br>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-blue">🏠 Back to Dashboard</a>
+    <a href="{{ url_for('export_tamper') }}" class="btn btn-blue">📤 Export Results</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🔍 Tamper Details</title>
+  <style>
+    body { background:#1e1e2f; color:white; font-family:Arial,sans-serif; }
+    .container { max-width:700px; margin:30px auto; background:#2c2f3a; padding:20px; border-radius:12px; }
+    h2 { text-align:center; color:#ffcc00; }
+    .card { margin-top:20px; background:#1e1e2f; padding:15px; border-radius:10px; }
+    .label { font-weight:bold; color:#28a745; }
+    .status { font-size:18px; margin-top:10px; }
+    .btn { padding:6px 12px; border-radius:8px; text-decoration:none; font-weight:bold; background:#007bff; color:white; }
+    .btn:hover { background:#0066d6; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔍 Tamper Details – {{ filename }}</h2>
+    <div class="card">
+      <p><span class="label">Current File Hash:</span> {{ current_hash }}</p>
+      <p><span class="label">Baseline Hash:</span> {{ baseline_hash if baseline_hash else "Not available" }}</p>
+      <p class="status">Status: {{ status }}</p>
+    </div>
+    <br>
+    <a href="{{ url_for('tamper_detection') }}" class="btn">⬅ Back to Tamper Detection</a>
+  </div>
+</body>
+</html>

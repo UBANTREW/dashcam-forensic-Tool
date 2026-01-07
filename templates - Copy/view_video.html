@@ -1,0 +1,109 @@
+// ...existing code...
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎥 View Video</title>
+  <style>
+    :root{
+      --bg:#0b1220; --card:#0f1724; --accent:#00bcd4; --muted:#98a0a8;
+      --text:#e6eef0; --gap:12px;
+    }
+    html,body{height:100%;margin:0}
+    body{
+      background:var(--bg); color:var(--text); font-family:Segoe UI,Arial,sans-serif;
+      padding-bottom:88px; -webkit-font-smoothing:antialiased;
+    }
+    .nav-wrap{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.02);position:sticky;top:0;background:rgba(7,12,20,0.85)}
+    .crumbs{font-size:13px;color:var(--muted)}
+    .brand{min-width:220px}
+    .brand .title{font-size:18px;color:var(--accent);font-weight:800}
+    .brand .subtitle{font-size:12px;color:var(--muted)}
+    .hero{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
+    .module-title{font-size:18px;margin:0}
+    .module-meta{font-size:12px;color:var(--muted);margin:0}
+    .container{display:flex;justify-content:center;padding:12px}
+    .card{background:var(--card);width:100%;max-width:760px;border-radius:10px;padding:14px;box-shadow:0 8px 20px rgba(0,0,0,0.5)}
+    .filename{color:#ffd166;font-weight:800;font-size:14px}
+    .file-meta{color:var(--muted);font-size:12px}
+    .video-wrap{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+    .video-frame{flex:1 1 480px;max-width:640px;min-width:280px;border-radius:10px;border:3px solid rgba(34,197,94,0.1);overflow:hidden;background:#000}
+    .video-frame video{display:block;width:100%;height:auto}
+    .side-panel{width:220px;max-width:220px;min-width:200px;background:rgba(255,255,255,0.01);padding:10px;border-radius:8px;color:var(--muted);font-size:13px}
+    .bottom-bar{position:fixed;left:0;right:0;bottom:12px;display:flex;justify-content:center;gap:10px;z-index:2000}
+    .btn-primary{background:var(--accent);color:#042028;padding:10px 14px;border-radius:8px;text-decoration:none;font-weight:700}
+    .btn-secondary{background:transparent;color:var(--text);padding:10px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);text-decoration:none;font-weight:600}
+    @media(max-width:880px){.side-panel{display:none}.card{max-width:720px}}
+    @media(max-width:520px){.brand .title{font-size:16px}.module-title{font-size:16px}.card{padding:10px}.video-frame{flex-basis:100%;max-width:100%}}
+  </style>
+</head>
+<body>
+  <div class="nav-wrap">
+    <div class="crumbs">
+      <a href="{{ url_for('dashboard') }}" style="color:var(--accent);text-decoration:none;font-weight:700">Home</a> /
+      <a href="{{ url_for('upload_video') }}" style="color:var(--accent);text-decoration:none;font-weight:700">Video Upload</a> /
+      <span style="color:var(--muted)">Secure Dashcam Analysis</span>
+    </div>
+    <div class="brand" aria-hidden="false">
+      <div class="title">🎥 Dashcam Forensics</div>
+      <div class="subtitle">Digital Forensics • Evidence Integrity</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <a class="btn-secondary" href="{{ url_for('dashboard') }}">🏠 Home</a>
+      <a class="btn-primary" href="{{ url_for('upload_video') }}">⬅ Uploads</a>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div>
+      <h2 class="module-title">🎥 Video Playback & Review</h2>
+      <p class="module-meta">Now viewing: <strong style="color:#ffd166">{{ filename }}</strong></p>
+    </div>
+    <div class="hero-actions" style="display:flex;gap:8px">
+      <a class="btn-secondary" href="{{ url_for('license_plate') }}">⚙️ Workflow</a>
+      <a class="btn-secondary" href="{{ url_for('report_generation') }}">Report</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div>
+          <div class="filename">{{ filename }}</div>
+          <div class="file-meta">Uploaded: {{ uploaded_at if uploaded_at else 'N/A' }}</div>
+        </div>
+        <div style="color:var(--muted);font-size:12px">Case: {{ case_id if case_id else 'Unassigned' }}</div>
+      </div>
+
+      <div class="video-wrap">
+        <div class="video-frame">
+          <video controls preload="metadata">
+            <source src="{{ url_for('view_video_file', filename=filename) }}">
+            Your browser does not support HTML5 video.
+          </video>
+        </div>
+
+        <div class="side-panel" aria-hidden="false">
+          <strong>Playback Tools</strong>
+          <ul style="margin-top:8px;padding-left:16px">
+            <li>Frame step</li>
+            <li>Export snapshot</li>
+            <li>LP detection</li>
+            <li>Tamper check</li>
+          </ul>
+          <hr style="border-color:rgba(255,255,255,0.03);margin:10px 0">
+          <div><strong>Resolution:</strong> {{ resolution if resolution else 'Auto' }}</div>
+          <div style="margin-top:6px"><strong>Duration:</strong> {{ duration if duration else '-' }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-bar">
+    <a class="btn-primary" href="{{ url_for('upload_video') }}">⬅ Back to Uploads</a>
+    <a class="btn-secondary" href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+  </div>
+</body>
+</html>
+// ...existing code...

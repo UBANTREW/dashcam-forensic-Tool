@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>📑 Report Generation</title>
+  <style>
+    body {
+      background: #1e1e2f;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #2c2f3a;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    .btn {
+      display: inline-block;
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      background: #007bff;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+    .btn:hover { background: #0066d6; }
+    .btn-red { background: #ff4757; }
+    .btn-red:hover { background: #e84118; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>📑 Report Generation</h1>
+    <p>Click below to generate and download the forensic PDF report.</p>
+    <a href="{{ url_for('generate_report') }}" class="btn">Generate Report</a>
+    <br>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-red">⬅ Back to Dashboard</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Video</title>
+
+    <style>
+        body {
+            background-color: #0b1f36;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background-color: #0e2a47;
+            padding: 25px;
+            border-radius: 15px;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+        }
+
+        .upload-box {
+            background-color: #14375e;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .video-list {
+            background-color: #14375e;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+
+        .video-item {
+            background-color: #102d4d;
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        /* ⭐ Button Styles (Blue View + Red Delete) */
+        .view-btn {
+            background-color: #1e63ff;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .view-btn:hover {
+            background-color: #0047d4;
+        }
+
+        .delete-btn {
+            background-color: #e63946;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+        <h2>Upload Video</h2>
+
+        <div class="upload-box">
+            <form action="/upload_video" method="POST" enctype="multipart/form-data">
+                <input type="file" name="video" accept="video/*" required>
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+
+        <h3>Uploaded Videos</h3>
+
+        <div class="video-list">
+            {% if videos %}
+                {% for v in videos %}
+                <div class="video-item">
+                    <div>
+                        <strong>{{ v.filename }}</strong><br>
+                        <small>Uploaded: {{ v.uploaded }}</small>
+                    </div>
+
+                    <div>
+                        <a href="{{ url_for('view_video', video_id=v.id) }}" class="view-btn">View</a>
+                        <a href="{{ url_for('delete_video', video_id=v.id) }}" class="delete-btn">Delete</a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No videos uploaded yet.</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+</body>
+</html>

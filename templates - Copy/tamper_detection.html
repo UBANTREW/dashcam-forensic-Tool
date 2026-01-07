@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>🛡️ Tamper Detection</title>
+<style>
+body { font-family: Arial,sans-serif; background:#1e1e2f; color:white; padding:20px; }
+.container { max-width:1000px; margin:auto; background:#2c2f3a; padding:20px; border-radius:10px;}
+h2 { color:#ffcc00; }
+table { width:100%; border-collapse:collapse; margin-top:15px;}
+th,td { padding:8px; border-bottom:1px solid #444; }
+th { background:#3a3d4a; }
+
+a.btn {
+    padding:6px 12px;
+    background:#007bff;
+    color:white;
+    text-decoration:none;
+    border-radius:6px;
+    margin-right:5px;
+}
+
+.status-authentic { color:#28a745; font-weight:bold; }
+.status-tampered { color:#dc3545; font-weight:bold; }
+.status-unverified { color:#ffc107; font-weight:bold; }
+</style>
+</head>
+
+<body>
+<div class="container">
+<h2>🛡️ Tamper Detection Analysis</h2>
+
+<table>
+<tr>
+<th>Filename</th>
+<th>Size</th>
+<th>Uploaded At</th>
+<th>Integrity Status</th>
+<th>Action</th>
+</tr>
+
+{% for v in videos %}
+<tr>
+<td>{{ v.filename }}</td>
+<td>{{ v.size }}</td>
+<td>{{ v.uploaded_at }}</td>
+<td>
+    {% if "Authentic" in v.status %}
+        <span class="status-authentic">{{ v.status }}</span>
+    {% elif "Tampered" in v.status %}
+        <span class="status-tampered">{{ v.status }}</span>
+    {% else %}
+        <span class="status-unverified">{{ v.status }}</span>
+    {% endif %}
+</td>
+<td>
+    <a href="{{ url_for('tamper_details', filename=v.filename) }}" class="btn">🔍 Details</a>
+
+    {% if "Unverified" in v.status %}
+        <a href="{{ url_for('set_baseline', filename=v.filename) }}" class="btn">⚡ Set Baseline</a>
+    {% endif %}
+</td>
+</tr>
+{% endfor %}
+</table>
+
+<a href="{{ url_for('dashboard') }}" class="btn">⬅ Back to Home</a>
+</div>
+</body>
+</html>

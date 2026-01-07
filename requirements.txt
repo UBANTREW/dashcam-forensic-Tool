@@ -1,0 +1,9 @@
+Flask==2.3.3
+Flask-Mail==0.9.1
+Werkzeug==2.3.7
+itsdangerous==2.1.2
+python-dotenv==1.0.0
+opencv-python==4.8.0.74
+pytesseract==0.3.10
+ultralytics==8.0.181
+reportlab==4.0.4

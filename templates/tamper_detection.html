@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ Tamper Detection</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f1419;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 280px;
+            height: 100vh;
+            background: #1a2332;
+            padding: 30px 20px;
+            position: fixed;
+            border-right: 3px solid #00bcd4;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px;
+            color: #ecf0f1;
+            text-decoration: none;
+            margin: 12px 0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        .sidebar a:hover {
+            background: #00bcd4;
+            color: #0f1419;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 30px;
+            left: 20px;
+            right: 20px;
+        }
+
+        .footer-text {
+            color: #00bcd4;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .footer-text p {
+            margin: 0;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .content {
+            margin-left: 320px;
+            padding: 40px;
+            width: calc(100% - 320px);
+        }
+
+        .container {
+            background: #1a2332;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+        }
+
+        h1 {
+            text-align: center;
+            color: #00bcd4;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #00bcd4;
+            color: #0f1419;
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #2a3f4f;
+            color: #ecf0f1;
+        }
+
+        tr:hover {
+            background: #0f1419;
+            transition: 0.2s;
+        }
+
+        .status-authentic {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .status-tampered {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .status-baseline {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .action-btn {
+            display: inline-block;
+            padding: 10px 16px;
+            margin: 5px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            color: white;
+            transition: 0.3s;
+            font-size: 13px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-details {
+            background: #00bcd4;
+            color: #0f1419;
+        }
+
+        .btn-details:hover {
+            background: #00acc1;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn-home {
+            background: #00bcd4;
+            color: #0f1419;
+        }
+
+        .btn-home:hover {
+            background: #00acc1;
+        }
+
+        .btn-export {
+            background: #00bcd4;
+            color: #0f1419;
+        }
+
+        .btn-export:hover {
+            background: #00acc1;
+        }
+
+        .btn-continue {
+            background: #00bcd4;
+            color: #0f1419;
+            font-size: 15px;
+            padding: 12px 25px;
+        }
+
+        .btn-continue:hover {
+            background: #00acc1;
+            transform: scale(1.05);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .no-videos {
+            text-align: center;
+            color: #aaa;
+            padding: 30px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <a href="{{ url_for('dashboard') }}"><i class="fa fa-home"></i> Home</a>
+    <a href="{{ url_for('tamper_detection') }}"><i class="fa fa-shield"></i> Tamper Detection</a>
+
+    <div class="sidebar-footer">
+        <div class="footer-text">
+            Secure Dashcam Analysis
+            <p>Digital Forensics • Evidence Integrity</p>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="container">
+        <h1>🛡️ Tamper Detection Analysis</h1>
+        <p class="description">
+            Forensic integrity verification • Hash-based authenticity analysis • File manipulation detection
+        </p>
+
+        {% if videos %}
+        <table>
+            <tr>
+                <th>📁 Filename</th>
+                <th>📊 Size</th>
+                <th>📅 Uploaded At</th>
+                <th>🔐 Integrity Status</th>
+                <th>⚙️ Action</th>
+            </tr>
+
+            {% for video in videos %}
+            <tr>
+                <td>{{ video.filename }}</td>
+                <td>{{ video.size }}</td>
+                <td>{{ video.uploaded_at }}</td>
+                <td>
+                    {% if "Authentic" in video.status %}
+                        <span class="status-authentic">{{ video.status }}</span>
+                    {% elif "Tampered" in video.status %}
+                        <span class="status-tampered">{{ video.status }}</span>
+                    {% else %}
+                        <span class="status-baseline">{{ video.status }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('tamper_details', filename=video.filename) }}" class="action-btn btn-details">
+                        🔍 View Details
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <div class="no-videos">
+            ℹ️ No videos available for tamper detection. Please upload a video first.
+        </div>
+        {% endif %}
+
+        <!-- Action Buttons -->
+        <div class="btn-container">
+            <a href="{{ url_for('dashboard') }}" class="action-btn btn-home">
+                ⬅ Back to Home
+            </a>
+            <a href="{{ url_for('export_tamper') }}" class="action-btn btn-export">
+                📥 Export Results
+            </a>
+            <a href="{{ url_for('license_plate_page') }}" class="action-btn btn-continue">
+                ➜ Continue to License Plate Detection
+            </a>
+        </div>
+
+        <footer>
+            ⚙️ Dashcam Forensic Workflow — Tamper Detection Module
+        </footer>
+    </div>
+</div>
+
+</body>
+</html>

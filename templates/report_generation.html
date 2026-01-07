@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Generate Forensic Report — Dashcam Forensics</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+body{
+    margin:0;
+    min-height:100vh;
+    font-family:"Segoe UI", Arial, sans-serif;
+    background:radial-gradient(circle at top,#0e2a33,#08141c 65%);
+    color:#e6f4f1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.card{
+    background:linear-gradient(180deg,#132e3a,#102733);
+    max-width:760px;
+    width:100%;
+    padding:42px;
+    border-radius:18px;
+    text-align:center;
+    box-shadow:
+        0 0 0 1px rgba(56,189,248,.25),
+        0 30px 60px rgba(0,0,0,.65);
+}
+
+.icon{
+    width:74px;
+    height:74px;
+    margin:0 auto 18px;
+    border-radius:18px;
+    background:linear-gradient(135deg,#2563eb,#38bdf8);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 0 28px rgba(56,189,248,.65);
+}
+
+.icon i{
+    font-size:34px;
+    color:#ffffff;
+}
+
+h1{
+    font-size:28px;
+    margin-bottom:10px;
+}
+
+p{
+    color:#9fb7b2;
+    font-size:15px;
+    line-height:1.6;
+    margin-bottom:24px;
+}
+
+.notice{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    padding:14px 16px;
+    border-radius:12px;
+    background:#0b2b34;
+    border:1px solid rgba(56,189,248,.35);
+    color:#7dd3fc;
+    margin-bottom:34px;
+}
+
+form{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.btn{
+    padding:14px 28px;
+    border-radius:14px;
+    font-weight:600;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    transition:.2s ease;
+    border:none;
+    cursor:pointer;
+    font-size:16px;
+}
+
+.btn-generate{
+    background:#1ec7a6;
+    color:#062a28;
+    box-shadow:0 0 20px rgba(30,199,166,.55);
+}
+
+.btn-generate:hover{
+    background:#17a98d;
+}
+
+.btn-back{
+    background:#facc15;
+    color:#1f2933;
+    box-shadow:0 0 18px rgba(250,204,21,.55);
+}
+
+.btn-back:hover{
+    background:#eab308;
+}
+
+.footer{
+    margin-top:28px;
+    font-size:12px;
+    color:#7fa7a2;
+}
+
+.alerts{
+    margin-bottom:24px;
+}
+
+.alert{
+    padding:12px 16px;
+    border-radius:10px;
+    margin-bottom:10px;
+}
+
+.alert-success{
+    background:#065f46;
+    border:1px solid #10b981;
+    color:#86efac;
+}
+
+.alert-danger{
+    background:#7f1d1d;
+    border:1px solid #ef4444;
+    color:#fca5a5;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <div class="icon">
+        <i class="fas fa-file-export"></i>
+    </div>
+
+    <h1>Generate Forensic Report</h1>
+
+    <p>
+        Click the button below to generate a comprehensive digital video forensic examination report.
+        The report includes tamper detection, timestamp extraction, and license plate analysis.
+    </p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="alerts">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="notice">
+        <i class="fas fa-info-circle"></i>
+        Report will include latest uploaded video data
+    </div>
+
+    <form method="POST">
+        <button type="submit" class="btn btn-generate">
+            📋 Generate Report Now
+        </button>
+        
+        <a href="{{ url_for('dashboard') }}" class="btn btn-back">
+            ⬅ Back to Dashboard
+        </a>
+    </form>
+
+    <div class="footer">
+        ©️ 2025 Dashcam Forensics — Digital Evidence Platform
+    </div>
+
+</div>
+
+</body>
+</html>

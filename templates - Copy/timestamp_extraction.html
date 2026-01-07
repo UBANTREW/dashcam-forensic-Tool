@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🕒 Timestamp Extraction — Forensic Analysis</title>
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(135deg, #1e1e2f 0%, #2c2f3a 100%);
+    color: #fff;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.container { max-width: 1200px; margin: 0 auto; }
+
+header {
+    background: rgba(0, 102, 255, 0.1);
+    border-left: 4px solid #0066ff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+header h1 { font-size: 28px; color: #ffcc00; margin-bottom: 5px; }
+header p { color: #ccc; font-size: 14px; }
+
+.forensic-box {
+    background: rgba(44, 47, 58, 0.8);
+    border: 1px solid #444;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+}
+
+.forensic-box h2 {
+    color: #ffcc00;
+    font-size: 20px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #ffcc00;
+    padding-bottom: 10px;
+}
+
+.result-card {
+    background: rgba(30, 30, 47, 0.6);
+    border-left: 4px solid #28a745;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+.result-card.error { border-left-color: #dc3545; color: #ff6b6b; }
+.result-card.warning { border-left-color: #ffc107; color: #ffc107; }
+.result-card.success { border-left-color: #28a745; color: #28a745; }
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+}
+
+.metric-box {
+    background: rgba(0, 102, 255, 0.1);
+    border: 1px solid #0066ff;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.metric-label {
+    color: #aaa;
+    font-size: 12px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.metric-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffcc00;
+}
+
+.metric-value.good { color: #28a745; }
+.metric-value.warn { color: #ffc107; }
+.metric-value.bad { color: #dc3545; }
+
+.frame-preview {
+    background: rgba(30, 30, 47, 0.6);
+    border: 1px solid #444;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.frame-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.frame-id { color: #00ccff; font-weight: bold; }
+
+.confidence-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.confidence-badge.high { background: rgba(40,167,69,0.2); border: 1px solid #28a745; color: #28a745; }
+.confidence-badge.medium { background: rgba(255,193,7,0.2); border: 1px solid #ffc107; color: #ffc107; }
+.confidence-badge.low { background: rgba(220,53,69,0.2); border: 1px solid #dc3545; color: #ff6b6b; }
+
+.image-container img {
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid #555;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 12px 20px;
+    font-weight: bold;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-primary { background: #0066ff; color: #fff; }
+.btn-secondary { background: #6c757d; color: #fff; }
+
+.forensic-footer {
+    margin-top: 30px;
+    font-size: 12px;
+    color: #999;
+    text-align: center;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header>
+<h1>⚙ Dashcam Forensic Workflow — Timestamp Extraction</h1>
+<p>PSM-2 | OCR-based Timestamp & Speed Evidence Analysis</p>
+</header>
+
+<!-- TIMESTAMP RESULT -->
+<div class="forensic-box">
+<h2>📌 Extracted Timestamp Result</h2>
+{% for ts in timestamps %}
+<div class="result-card {% if 'not' in ts %}error{% else %}success{% endif %}">{{ ts }}</div>
+{% endfor %}
+</div>
+
+<!-- METRICS -->
+<div class="forensic-box">
+<h2>📊 Forensic Metrics</h2>
+<div class="metrics-grid">
+<div class="metric-box">
+<div class="metric-label">Frames Analyzed</div>
+<div class="metric-value">{{ previews|length }}</div>
+</div>
+</div>
+</div>
+
+<!-- 🚗 SPEED ESTIMATION -->
+<div class="forensic-box">
+<h2>🚗 Vehicle Speed Estimation</h2>
+
+{% if estimated_speed %}
+<div class="metrics-grid">
+<div class="metric-box">
+<div class="metric-label">Estimated Speed</div>
+<div class="metric-value">{{ estimated_speed }} {{ speed_unit }}</div>
+</div>
+
+<div class="metric-box">
+<div class="metric-label">Consistency</div>
+<div class="metric-value
+{% if speed_consistency >= 80 %}good
+{% elif speed_consistency >= 50 %}warn
+{% else %}bad{% endif %}">
+{{ speed_consistency }}%
+</div>
+</div>
+
+<div class="metric-box">
+<div class="metric-label">Reliability</div>
+<div class="metric-value
+{% if speed_reliability == 'HIGH' %}good
+{% elif speed_reliability == 'MEDIUM' %}warn
+{% else %}bad{% endif %}">
+{{ speed_reliability }}
+</div>
+</div>
+</div>
+{% else %}
+<div class="result-card warning">
+⚠️ Vehicle speed overlay not detected.
+</div>
+{% endif %}
+</div>
+
+<!-- FRAMES -->
+<div class="forensic-box">
+<h2>🖼 Frame-by-Frame Analysis</h2>
+
+{% for frame in previews %}
+<div class="frame-preview">
+<div class="frame-header">
+<span class="frame-id">Frame {{ frame.frame }}</span>
+<span class="confidence-badge
+{% if frame.confidence >= 80 %}high
+{% elif frame.confidence >= 50 %}medium
+{% else %}low{% endif %}">
+{{ frame.confidence|int }}%
+</span>
+</div>
+
+<div class="image-container">
+<img src="{{ url_for('static', filename='crops/' ~ frame.full_path) }}" alt="Full frame {{ frame.frame }}">
+</div>
+
+<div class="image-container">
+<img src="{{ url_for('static', filename='crops/' ~ frame.crop_path) }}" alt="Cropped frame {{ frame.frame }}">
+</div>
+
+<div class="ocr-text">
+<strong>Detected Timestamp:</strong><br>
+{{ frame.text }}
+</div>
+
+<div class="ocr-raw">
+<strong>Raw OCR Output:</strong><br>
+{{ frame.raw if frame.raw else "(empty)" }}
+</div>
+
+</div>
+{% endfor %}
+
+</div>
+
+<div class="button-group">
+<a href="{{ url_for('dashboard') }}" class="btn btn-secondary">⬅ Dashboard</a>
+{% if show_continue_button %}
+<a href="{{ url_for('tamper_detection') }}" class="btn btn-primary">➜ Tamper Detection</a>
+{% endif %}
+</div>
+
+<div class="forensic-footer">
+Forensic OCR-based estimation. Examiner verification recommended.
+</div>
+
+</div>
+</body>
+</html>

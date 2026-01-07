@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🕒 Timestamp Extraction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #2c3e50;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 230px;
+            height: 100vh;
+            background: #34495e;
+            padding: 20px;
+            position: fixed;
+            border-right: 3px solid #3498db;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px;
+            color: #ecf0f1;
+            text-decoration: none;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: 0.3s;
+            background: #2c3e50;
+            font-weight: bold;
+        }
+
+        .sidebar a:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        .content {
+            margin-left: 270px;
+            padding: 30px;
+            width: calc(100% - 270px);
+        }
+
+        .container {
+            background: #34495e;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #3498db;
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        .results-card {
+            background: #2c3e50;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+        }
+
+        .results-card h3 {
+            color: #3498db;
+            margin-top: 0;
+            font-size: 18px;
+        }
+
+        .results-card p {
+            margin: 10px 0;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #ecf0f1;
+        }
+
+        .good {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .bad {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .preview-img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 2px solid #3498db;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            margin: 10px 10px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: 0.3s;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-home {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-home:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+
+        .btn-continue {
+            background: #2ecc71;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .btn-continue:hover {
+            background: #27ae60;
+            transform: scale(1.05);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #95a5a6;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <a href="{{ url_for('dashboard') }}"><i class="fa fa-home"></i> Home</a>
+  
+    <a href="{{ url_for('timestamp_extraction') }}"><i class="fa fa-clock"></i> Timestamp Extraction</a>
+</div>
+
+<div class="content">
+    <div class="container">
+        <h1>🕒 Timestamp Extraction Results</h1>
+
+        <!-- Extracted Timestamps -->
+        <div class="results-card">
+            <h3>Extracted Timestamps:</h3>
+            {% for result in timestamps %}
+                {% if "→" in result %}
+                    <p class="good">✅ {{ result }}</p>
+                {% else %}
+                    <p class="bad">❌ {{ result }}</p>
+                {% endif %}
+            {% endfor %}
+        </div>
+<!-- FRAME PREVIEWS -->
+<div class="results-card">
+  <h3>🖼 Timestamp Previews:</h3>
+
+  {% if previews %}
+    {% for frame in previews %}
+      <div style="margin-bottom:20px;padding:15px;background:#22333f;border-radius:8px;border-left:4px solid #f39c12;">
+        <strong style="color:#f39c12;">Frame {{ frame.frame }} | Confidence: {{ (frame.confidence * 100)|int }}%</strong>
+
+        <div style="margin-top:12px;">
+          <p style="color:#95a5a6;font-size:12px;margin:5px 0;">📹 Full Frame:</p>
+          <img src="{{ url_for('static', filename='crops/' + frame.full_path) }}"
+            style="width:100%;max-width:600px;border-radius:6px;border:2px solid #3498db;margin-bottom:12px;">
+
+          <p style="color:#95a5a6;font-size:12px;margin:5px 0;">✂️ Cropped Region:</p>
+          <img src="{{ url_for('static', filename='crops/' + frame.crop_path) }}"
+            style="width:100%;max-width:600px;border-radius:6px;border:2px solid #27ae60;margin-bottom:12px;">
+
+          <p style="color:#ecf0f1;margin:8px 0;"><strong>Detected:</strong> {{ frame.text }}</p>
+          <p style="color:#95a5a6;font-size:12px;margin:5px 0;"><strong>Raw OCR:</strong> {{ frame.raw }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No preview images available.</p>
+  {% endif %}
+</div>  <!-- Action Buttons -->
+        <div class="btn-container">
+            <a href="{{ url_for('dashboard') }}" class="action-btn btn-home">
+                ⬅ Back to Home
+            </a>
+            <a href="{{ url_for('tamper_detection') }}" class="action-btn btn-continue">
+                ➜ Continue to Tamper Detection
+            </a>
+        </div>
+
+        <footer>
+            ⚙ Dashcam Forensic Workflow — Timestamp Extraction Module
+        </footer>
+    </div>
+</div>
+
+</body>
+</html>

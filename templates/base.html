@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tamper Details</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-dark text-light">
+    <div class="container mt-5">
+        <h2 class="text-warning mb-4">Tamper Detection Details</h2>
+
+        {% if details %}
+            <table class="table table-bordered table-dark">
+                <thead>
+                    <tr>
+                        <th>Video Name</th>
+                        <th>Status</th>
+                        <th>Confidence</th>
+                        <th>Date Processed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in details %}
+                    <tr>
+                        <td>{{ row.video_name }}</td>
+                        <td>
+                            {% if row.status == "Tampered" %}
+                                <span class="text-danger fw-bold">Tampered</span>
+                            {% else %}
+                                <span class="text-success fw-bold">Clean</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ row.confidence }}%</td>
+                        <td>{{ row.date_processed }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No tamper details available.</p>
+        {% endif %}
+
+        <a href="{{ url_for('tamper_detection') }}" class="btn btn-secondary mt-3">⬅ Back</a>
+    </div>
+</body>
+</html>

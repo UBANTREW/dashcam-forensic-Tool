@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard — Dashcam Footage Analysis Tool</title>
+
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+
+  <style>
+    :root{
+      --bg:#0f2430;
+      --panel:#122B3A;
+      --card:#163744;
+      --accent:#18C1A6;
+      --muted:#9fb3bf;
+      --glass: rgba(255,255,255,0.03);
+      --yellow:#FFC857;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: "Inter", system-ui, Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg,#07121a 0%, #0b2330 100%);
+      color:#e9f6f3;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    .app{
+      display:grid;
+      grid-template-columns: 260px 1fr 420px;
+      gap:18px;
+      padding:20px;
+      min-height:100vh;
+      align-items:start;
+    }
+
+    /* Sidebar */
+    .sidebar{
+      background:var(--panel);
+      border-radius:12px;
+      padding:18px;
+      height: calc(100vh - 40px);
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      box-shadow:0 8px 24px rgba(2,10,18,0.6);
+    }
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{
+      width:48px;height:48px;border-radius:10px;
+      background:linear-gradient(135deg,var(--accent),#07a38f);
+      display:flex;align-items:center;justify-content:center;color:#042226;font-weight:800;
+      font-size:1rem;
+    }
+    .brand h3{margin:0;color:var(--accent);font-size:1.05rem}
+    .brand .small{font-size:0.86rem;color:var(--muted)}
+
+    nav.side-nav{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+    nav.side-nav a{
+      display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;
+      color:#d7f0eb;text-decoration:none;font-weight:600;font-size:0.95rem;
+    }
+    nav.side-nav a i{width:22px;text-align:center;color:var(--accent)}
+    nav.side-nav a:hover{background:var(--glass);transform:translateX(6px);transition:all .14s ease}
+
+    .sidebar .footer-note{margin-top:auto;font-size:0.82rem;color:var(--muted);line-height:1.3}
+
+    .logout{
+      margin-top:8px;
+      background:#c33b3b;border-radius:8px;text-align:center;
+      overflow:hidden;
+    }
+    .logout a{display:block;padding:10px 12px;color:#fff;text-decoration:none;font-weight:700}
+
+    /* Main Center Section */
+    .main{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+    .welcome{
+      padding:18px 22px;border-radius:12px;background:transparent;
+    }
+    .welcome h1{margin:0;font-size:1.3rem;color:#fff}
+    .welcome p{margin:6px 0 0;color:var(--muted)}
+
+    /* NEW CENTER BIG ICON (ADDED FOR YOU) */
+    .center-card{
+      background:var(--card);
+      border-radius:16px;
+      padding:40px;
+      margin-top:10px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      min-height:260px;
+      box-shadow:0 8px 24px rgba(0,0,0,0.4);
+      border:1px solid rgba(255,255,255,0.05);
+    }
+    .center-card i{
+      font-size:80px;
+      color:var(--accent);
+      margin-bottom:18px;
+    }
+    .center-card h2{
+      margin:0;
+      font-size:1.4rem;
+      color:#fff;
+      font-weight:800;
+    }
+    .center-card p{
+      margin-top:8px;
+      color:var(--muted);
+      max-width:320px;
+      line-height:1.4;
+    }
+
+    /* Right Column */
+    .right-column{
+      display:flex;flex-direction:column;gap:18px;
+    }
+
+    .upload-card{
+      background:var(--card);border-radius:12px;padding:18px;
+    }
+    .upload-title{color:var(--accent);font-weight:700;margin-bottom:10px}
+    .upload-area{
+      border:2px dashed rgba(255,255,255,0.04);
+      border-radius:12px;padding:20px;text-align:center;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+    }
+
+    .file-chooser{
+      display:flex;flex-direction:column;align-items:center;gap:12px;
+    }
+    .file-chooser input[type=file]{
+      width:280px;padding:12px;border-radius:10px;background:#0f3a4a;border:none;color:#dff6f1;
+      font-weight:600;outline:none;
+    }
+    .upload-btn{
+      background:var(--yellow);border-radius:10px;padding:10px 18px;border:none;font-weight:800;
+      color:#052024;cursor:pointer;
+    }
+
+    .success-box{
+      margin-top:10px;
+      background:#0d3c2e;
+      border-left:4px solid var(--accent);
+      padding:12px 16px;
+      border-radius:8px;
+      font-weight:600;
+      color:#b8fff1;
+      box-shadow:0 4px 10px rgba(0,0,0,0.25);
+    }
+
+    .card{
+      background:var(--card);
+      border-radius:14px;
+      padding:28px;
+      box-shadow:0 8px 24px rgba(2,10,18,0.5);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:180px;
+    }
+
+    .analysis-box{flex-direction:column;text-align:center}
+    .analysis-box .cam{
+      width:84px;height:84px;border-radius:12px;background:rgba(255,255,255,0.03);
+      display:flex;align-items:center;justify-content:center;margin-bottom:18px;
+      font-size:38px;color:var(--accent);
+    }
+    .btn-big{
+      display:inline-block;padding:14px 28px;border-radius:12px;background:var(--accent);
+      color:#042226;font-weight:800;text-decoration:none;font-size:1.05rem;box-shadow:0 8px 20px rgba(24,193,166,0.12)
+    }
+
+    @media (max-width:1150px){
+      .app{grid-template-columns: 220px 1fr; padding:14px}
+    }
+    @media (max-width:800px){
+      .app{grid-template-columns:1fr;gap:12px;padding:12px}
+      .file-chooser input[type=file]{width:100%}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">DF</div>
+        <div>
+          <h3>Dashcam Forensics</h3>
+          <div class="small">Forensic Dashboard</div>
+        </div>
+      </div>
+
+      <nav class="side-nav">
+        <a href="{{ url_for('dashboard') }}"><i class="fa fa-house"></i> Dashboard</a>
+        <a href="{{ url_for('upload_video') }}"><i class="fa fa-upload"></i> Upload Video</a>
+        <a href="{{ url_for('timestamp_extraction') }}"><i class="fa fa-clock"></i> Timestamp Extraction</a>
+        <a href="{{ url_for('tamper_detection') }}"><i class="fa fa-shield-halved"></i> Tamper Detection</a>
+        <a href="{{ url_for('license_plate_page') }}"><i class="fa fa-car"></i> License Plate Detection</a>
+        <a href="{{ url_for('report_generation') }}"><i class="fa fa-file-alt"></i> Report Generation</a>
+      </nav>
+
+      <div class="footer-note">
+        <div style="font-weight:700;color:var(--accent)">Secure Dashcam Analysis</div>
+        <div style="margin-top:6px;color:var(--muted)">Digital Forensics • Evidence Integrity</div>
+      </div>
+
+      <div class="logout"><a href="{{ url_for('logout') }}"><i class="fa fa-sign-out-alt"></i> Logout</a></div>
+    </aside>
+
+    <!-- CENTER -->
+    <main class="main">
+      <div class="welcome">
+        <h1>Welcome to Dashcam Forensic Analysis</h1>
+        <p>AI-powered forensic analysis for investigators</p>
+      </div>
+
+      <!-- ⭐ NEW CENTER ICON ADDED -->
+      <div class="center-card">
+        <i class="fa-solid fa-video"></i>
+        <h2>Dashcam Analysis Dashboard</h2>
+        <p>Your central hub for uploading, analysing, and validating dashcam footage integrity.</p>
+      </div>
+    </main>
+
+    <!-- RIGHT COLUMN -->
+    <aside class="right-column">
+
+      <!-- UPLOAD SECTION -->
+      <div class="upload-card">
+        <div class="upload-title">Upload Dashcam Footage</div>
+        <div class="upload-area">
+          <form action="{{ url_for('upload_video') }}" method="post" enctype="multipart/form-data" style="margin:0">
+            <div class="file-chooser">
+              <input type="file" name="video" accept=".mp4,.avi,.mov,.mkv" required>
+              <button type="submit" class="upload-btn">Upload Video</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      {% if session.uploaded_video %}
+        <div class="success-box">
+          {{ session.uploaded_video }} uploaded successfully.
+        </div>
+      {% endif %}
+
+      <!-- START ANALYSIS -->
+      <div class="card analysis-box">
+        <div class="cam"><i class="fa fa-video"></i></div>
+        <div style="margin-bottom:14px;color:var(--muted);font-weight:600">
+          Proceed to the next analysis module after uploading footage
+        </div>
+        <a href="{{ url_for('start_analysis') }}" class="btn-big">🔍 Click here to start analysis</a>
+      </div>
+
+    </aside>
+
+  </div>
+</body>
+</html>

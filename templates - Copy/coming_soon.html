@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Coming Soon</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>📹 Dashcam Tool</h2>
+        <ul>
+            <li><a href="{{ url_for('dashboard') }}">🏠 Dashboard</a></li>
+            <li><a href="{{ url_for('upload_video') }}">📤 Upload Video</a></li>
+            <li><a href="{{ url_for('timestamp_extraction') }}">⏱ Timestamp Extraction</a></li>
+            <li><a href="{{ url_for('tamper_detection') }}">🛡 Tamper Detection</a></li>
+            <li><a href="{{ url_for('coming_soon') }}">🚓 License Plate Recognition</a></li>
+            <li><a href="{{ url_for('coming_soon') }}">📑 Report Generation</a></li>
+            <li><a href="{{ url_for('logout') }}">🚪 Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h2>🚧 This module will be available in PSM 2 🚧</h2>
+        <a href="{{ url_for('dashboard') }}" class="btn">⬅ Back to Dashboard</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Video Forensic Examination Report</title>
+    <style>
+        /* Print and screen styles */
+        @media print {
+            @page {
+                size: A4;
+                margin: 2cm;
+            }
+            body {
+                font-size: 11pt;
+            }
+        }
+        
+        @media screen {
+            body {
+                max-width: 210mm;
+                margin: 20px auto;
+                padding: 20px;
+                background: #f5f5f5;
+            }
+            .report-container {
+                background: white;
+                padding: 40px;
+                box-shadow: 0 0 20px rgba(0,0,0,0.1);
+                border: 1px solid #ddd;
+            }
+        }
+        
+        body {
+            font-family: 'Calibri', 'Arial', sans-serif;
+            line-height: 1.4;
+            color: #000;
+            background: white;
+        }
+        
+        /* Header and title styles */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #2c3e50;
+        }
+        
+        .agency-name {
+            font-size: 22pt;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+        
+        .agency-subtitle {
+            font-size: 12pt;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        
+        .report-title {
+            font-size: 20pt;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 25px 0;
+            padding: 10px 0;
+            border-top: 2px solid #3498db;
+            border-bottom: 2px solid #3498db;
+            letter-spacing: 1px;
+        }
+        
+        .case-info {
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+        
+        .section-title {
+            font-size: 14pt;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 35px 0 20px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        /* Timestamp image grid */
+        .timestamp-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .timestamp-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .timestamp-image {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 10px 0;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Courier New', monospace;
+            font-size: 11pt;
+            line-height: 1.5;
+        }
+        
+        .timestamp-label {
+            font-size: 10pt;
+            color: #7f8c8d;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        /* Evidence table styles */
+        .evidence-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 11pt;
+        }
+        
+        .evidence-table th {
+            background-color: #2c3e50;
+            color: white;
+            border: 1px solid #2c3e50;
+            padding: 12px 15px;
+            text-align: left;
+        }
+        
+        .evidence-table td {
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            text-align: left;
+            vertical-align: top;
+        }
+        
+        .evidence-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        /* Status badges */
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 10pt;
+            font-weight: bold;
+            margin: 2px;
+        }
+        
+        .status-intact {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .status-verified {
+            background: #3498db;
+            color: white;
+        }
+        
+        /* License plate section */
+        .license-plate-section {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .license-plate-display {
+            background: #2c3e50;
+            color: #fff;
+            padding: 25px;
+            text-align: center;
+            font-family: 'Arial Black', sans-serif;
+            font-size: 28pt;
+            letter-spacing: 4px;
+            margin: 20px auto;
+            border-radius: 8px;
+            border: 4px solid #e74c3c;
+            max-width: 500px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .confidence-display {
+            display: inline-block;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 12pt;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        /* Findings box */
+        .findings-box {
+            background: #f8f9fa;
+            border: 1px solid #3498db;
+            border-radius: 6px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        
+        .finding-item {
+            margin: 10px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .finding-item:before {
+            content: "✓";
+            color: #27ae60;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        /* Signature section */
+        .signature-section {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 2px solid #2c3e50;
+        }
+        
+        .signature-box {
+            display: inline-block;
+            padding: 20px;
+            margin: 20px;
+            text-align: center;
+            min-width: 250px;
+        }
+        
+        .signature-line {
+            width: 250px;
+            border-top: 2px solid #2c3e50;
+            margin: 40px 0 10px 0;
+        }
+        
+        .signature-label {
+            font-size: 11pt;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        /* Stamp */
+        .report-stamp {
+            text-align: center;
+            margin: 40px 0;
+            position: relative;
+        }
+        
+        .stamp-image {
+            max-width: 300px;
+            height: auto;
+            border: 2px solid #e74c3c;
+            border-radius: 4px;
+            padding: 10px;
+            background: white;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 9pt;
+            color: #7f8c8d;
+            border-top: 1px solid #ecf0f1;
+            padding-top: 15px;
+        }
+        
+        .color-primary { color: #2c3e50; }
+        .mt-30 { margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <!-- HEADER SECTION -->
+        <div class="header">
+            <div class="agency-name">DIGITAL FORENSICS DIVISION</div>
+            <div class="agency-subtitle">Digital Evidence Examination Unit</div>
+            <div class="report-title">DIGITAL VIDEO FORENSIC EXAMINATION REPORT</div>
+        </div>
+        
+        <!-- CASE INFORMATION -->
+        <div class="case-info">
+            <table style="width: 100%; font-size: 11pt;">
+                <tr>
+                    <td width="30%"><strong class="color-primary">Case Reference:</strong></td>
+                    <td><strong>2025-DV-001A</strong></td>
+                    <td width="30%"><strong class="color-primary">Report Date:</strong></td>
+                    <td>2025-12-24 18:05:15</td>
+                </tr>
+                <tr style="height: 10px;">
+                    <td colspan="4"></td>
+                </tr>
+                <tr>
+                    <td><strong class="color-primary">Evidence File:</strong></td>
+                    <td>CAR_2.mp4</td>
+                    <td><strong class="color-primary">Analysis Date:</strong></td>
+                    <td>2025-12-24</td>
+                </tr>
+                <tr style="height: 10px;">
+                    <td colspan="4"></td>
+                </tr>
+                <tr>
+                    <td><strong class="color-primary">Examiner:</strong></td>
+                    <td><strong>UBANDOMA</strong></td>
+                    <td><strong class="color-primary">Position:</strong></td>
+                    <td>Chief Digital Forensic Analyst</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- EXTRACTED TIMESTAMPS -->
+        <div class="section-title">EXTRACTED TIMESTAMP AND GEOLOCATION DATA (5 Frames)</div>
+        
+        <!-- TIMESTAMP IMAGES GRID -->
+        <div class="timestamp-grid">
+            <!-- TIMESTAMP 1 -->
+            <div class="timestamp-item">
+                <div class="timestamp-image">
+                    2025-08-04 11:29:31~1km/h<br>
+                    11°46:245'E,46°28.587'N<br><br>
+                    <strong>Cropped Region:</strong><br>
+                    2025-08-04 11:29:31~1km/h<br>
+                    11°46:245'E,46°28.587'N<br><br>
+                    <strong>Detected:</strong> 2025-08-04
+                </div>
+                <div class="timestamp-label">Timestamp Image 1 | Frame 1</div>
+            </div>
+            
+            <!-- TIMESTAMP 2 -->
+            <div class="timestamp-item">
+                <div class="timestamp-image">
+                    2025-08-04 11:29:31~1km/h<br>
+                    11°46.245'E, 46°28.587'N<br><br>
+                    <strong>Cropped Region:</strong><br>
+                    2025-08-04 11:29:31~1km/h<br>
+                    11°46.245'E, 46°28.587'N<br><br>
+                    <strong>Detected:</strong> 2025-08-04<br>
+                    <strong>Raw OCR:</strong> ee ee i a ee 2025-08-04 NOR ot ein thE, 46°26.587'N
+                </div>
+                <div class="timestamp-label">Timestamp Image 2 | Frame 2</div>
+            </div>
+            
+            <!-- TIMESTAMP 3 -->
+            <div class="timestamp-item">
+                <div class="timestamp-image">
+                    2025-08-04 11:29:32~1km/h<br>
+                    14°46:245'E, 46°28.586'N<br><br>
+                    <strong>Cropped Region:</strong><br>
+                    2025-08-04 11:29:32~1km/h<br>
+                    14°46:245'E, 46°28.586'N<br><br>
+                    <strong>Detected:</strong> 2025-08-04
+                </div>
+                <div class="timestamp-label">Timestamp Image 3 | Frame 3</div>
+            </div>
+            
+            <!-- TIMESTAMP 4 -->
+            <div class="timestamp-item">
+                <div class="timestamp-image">
+                    2025-08-04 11:29:33~0km/h<br>
+                    11°46:245'E, 46°28.586'N<br><br>
+                    <strong>Cropped Region:</strong><br>
+                    2025-08-04 11:29:33~0km/h<br>
+                    11°46:245'E, 46°28.586'N<br><br>
+                    <strong>Detected:</strong> 2025-08-04
+                </div>
+                <div class="timestamp-label">Timestamp Image 4 | Frame 4</div>
+            </div>
+        </div>
+        
+        <!-- Fifth Timestamp (center) -->
+        <div style="text-align: center; margin: 30px 0;">
+            <div class="timestamp-item" style="display: inline-block; width: 48%;">
+                <div class="timestamp-image">
+                    2025-08-04 11:29:33~0km/h<br>
+                    11°46:245'E,46°28.586'N<br><br>
+                    <strong>Cropped Region:</strong><br>
+                    2025-08-04 11:29:33~0km/h<br>
+                    11°46:245'E,46°28.586'N<br><br>
+                    <strong>Detected:</strong> 2025-08-04
+                </div>
+                <div class="timestamp-label">Timestamp Image 5 | Frame 5</div>
+            </div>
+        </div>
+        
+        <!-- LICENSE PLATE DETECTION -->
+        <div class="section-title">LICENSE PLATE DETECTION RESULTS</div>
+        
+        <div class="license-plate-section">
+            <div style="font-size: 14pt; font-weight: bold; color: #2c3e50; margin-bottom: 20px;">
+                DETECTED VEHICLE LICENSE PLATE
+            </div>
+            
+            <!-- License Plate Display -->
+            <div style="margin: 25px 0;">
+                <strong style="font-size: 12pt;">Detected Plate Text:</strong>
+                <div class="license-plate-display">
+                    GFS8 NXE
+                </div>
+            </div>
+            
+            <!-- Confidence Score -->
+            <div style="margin: 20px 0;">
+                <strong style="font-size: 12pt;">Confidence Score:</strong>
+                <div class="confidence-display">
+                    87% (High Confidence)
+                </div>
+            </div>
+            
+            <div class="timestamp-label" style="margin-top: 20px;">
+                Uploaded File: CAR_2.mp4 | Confidence: 0.87
+            </div>
+        </div>
+        
+        <!-- INTEGRITY VERIFICATION -->
+        <div class="section-title">INTEGRITY VERIFICATION & ANALYSIS</div>
+        
+        <table class="evidence-table">
+            <tr>
+                <th width="40%">Verification Type</th>
+                <th width="30%">Status</th>
+                <th width="30%">Timestamp</th>
+            </tr>
+            <tr>
+                <td>SHA-256 Hash Verification</td>
+                <td><span class="status-badge status-intact">✓ INTACT</span></td>
+                <td>2025-12-24 18:00:00</td>
+            </tr>
+            <tr>
+                <td>Metadata Consistency Analysis</td>
+                <td><span class="status-badge status-verified">✓ VERIFIED</span></td>
+                <td>2025-12-24 18:01:15</td>
+            </tr>
+            <tr>
+                <td>Timestamp Sequence Validation</td>
+                <td><span class="status-badge status-intact">✓ SEQUENTIAL</span></td>
+                <td>2025-12-24 18:02:30</td>
+            </tr>
+            <tr>
+                <td>Digital Tamper Detection</td>
+                <td><span class="status-badge status-intact">✓ NO TAMPERING</span></td>
+                <td>2025-12-24 18:03:45</td>
+            </tr>
+            <tr>
+                <td>Frame Integrity Check</td>
+                <td><span class="status-badge status-verified">✓ COMPLETE</span></td>
+                <td>2025-12-24 18:04:20</td>
+            </tr>
+        </table>
+        
+        <!-- FINDINGS AND CONCLUSION -->
+        <div class="section-title">FINDINGS AND CONCLUSION</div>
+        
+        <div class="findings-box">
+            <p><strong style="color: #2c3e50; font-size: 12pt;">Summary of Forensic Findings:</strong></p>
+            
+            <div class="finding-item">Video evidence file CAR_2.mp4 maintained digital integrity throughout forensic analysis</div>
+            <div class="finding-item">Five (5) timestamp frames successfully extracted with geolocation coordinates</div>
+            <div class="finding-item">Vehicle license plate positively identified: <strong>GFS8 NXE</strong> with 87% confidence</div>
+            <div class="finding-item">No evidence of digital tampering, editing, or manipulation detected</div>
+            <div class="finding-item">Timestamp sequence verified as chronological and consistent</div>
+            <div class="finding-item">All metadata fields validated against forensic standards</div>
+            
+            <div class="mt-30">
+                <p><strong style="color: #2c3e50; font-size: 12pt;">Forensic Conclusion:</strong></p>
+                <p style="text-align: justify; line-height: 1.6;">
+                    The digital video evidence (CAR_2.mp4) has been forensically examined and verified as authentic, 
+                    unaltered, and suitable for investigative purposes. All extracted data points including timestamps, 
+                    geolocation coordinates, and vehicle identification have been validated through automated forensic 
+                    analysis. The evidence supports examination objectives and maintains chain of custody integrity 
+                    throughout the analysis process.
+                </p>
+            </div>
+        </div>
+        
+        <!-- ORIGINAL REPORT STAMP -->
+        <div class="report-stamp">
+            <div style="margin-bottom: 20px;">
+                <strong style="color: #2c3e50; font-size: 11pt;">ORIGINAL REPORT VERIFICATION:</strong>
+            </div>
+            <!-- YOUR STAMP IMAGE HERE -->
+            <!-- Replace with your actual image path or base64 -->
+            <img src="path/to/your/stamp-image.png" alt="Original Forensic Report Stamp" class="stamp-image">
+            <div style="margin-top: 15px; font-size: 10pt; color: #7f8c8d;">
+                Digital Verification Stamp | Report Authenticity Verified
+            </div>
+        </div>
+        
+        <!-- SIGNATURE AND APPROVAL -->
+        <div class="signature-section">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <strong style="font-size: 12pt; color: #2c3e50;">AUTHORIZATION AND APPROVAL</strong>
+            </div>
+            
+            <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <div class="signature-label">Examining Analyst Signature</div>
+                    <div style="margin-top: 15px; font-size: 11pt;">
+                        <strong>Name:</strong> UBANDOMA<br>
+                        <strong>Position:</strong> Chief Digital Forensic Analyst<br>
+                        <strong>Date:</strong> 2025-12-24
+                    </div>
+                </div>
+                
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <div class="signature-label">Reviewing Authority Signature</div>
+                    <div style="margin-top: 15px; font-size: 11pt;">
+                        <strong>Name:</strong> ___________________<br>
+                        <strong>Position:</strong> ___________________<br>
+                        <strong>Date:</strong> ___________________
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- FOOTER -->
+        <div class="footer">
+            <div>DIGITAL FORENSICS DIVISION - EVIDENCE EXAMINATION UNIT</div>
+            <div style="margin: 10px 0; font-size: 8.5pt; color: #95a5a6;">
+                This report was generated by automated forensic analysis system v2.5 | Report ID: RPT-2025-12-24-180515
+            </div>
+            <div style="font-weight: bold; color: #e74c3c;">
+                CONFIDENTIAL - FOR AUTHORIZED INVESTIGATIVE PERSONNEL ONLY
+            </div>
+        </div>
+    </div>
+</body>
+</html>

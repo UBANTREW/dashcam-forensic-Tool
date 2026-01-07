@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tamper Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f1419;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 280px;
+            height: 100vh;
+            background: #1a2332;
+            padding: 30px 20px;
+            position: fixed;
+            border-right: 3px solid #00bcd4;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-box {
+            width: 50px;
+            height: 50px;
+            background: #00bcd4;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #0f1419;
+            margin-right: 15px;
+            font-size: 24px;
+        }
+
+        .logo-text h3 {
+            margin: 0;
+            color: #00bcd4;
+            font-size: 18px;
+        }
+
+        .logo-text p {
+            margin: 0;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px;
+            color: #ecf0f1;
+            text-decoration: none;
+            margin: 12px 0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        .sidebar a:hover {
+            background: #00bcd4;
+            color: #0f1419;
+        }
+
+        .content {
+            margin-left: 320px;
+            padding: 40px;
+            width: calc(100% - 320px);
+        }
+
+        .container {
+            background: #1a2332;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+        }
+
+        h1 {
+            color: #00bcd4;
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        .detail-card {
+            background: #0f1419;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #00bcd4;
+        }
+
+        .detail-card h3 {
+            color: #00bcd4;
+            margin-top: 0;
+            font-size: 16px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #2a3f4f;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #aaa;
+            font-weight: bold;
+            width: 40%;
+        }
+
+        .detail-value {
+            color: #ecf0f1;
+            word-break: break-all;
+            width: 60%;
+            text-align: right;
+        }
+
+        .status-authentic {
+            color: #2ecc71;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .status-tampered {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .hash-display {
+            background: #0f1419;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #00bcd4;
+            word-break: break-all;
+            margin-top: 8px;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .action-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            margin: 10px 10px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: 0.3s;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-back {
+            background: #00bcd4;
+            color: #0f1419;
+        }
+
+        .btn-back:hover {
+            background: #00acc1;
+            transform: scale(1.05);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar-logo">
+        <div class="logo-box">DF</div>
+        <div class="logo-text">
+            <h3>Dashcam Forensics</h3>
+            <p>Forensic Dashboard</p>
+        </div>
+    </div>
+
+    <a href="{{ url_for('tamper_detection') }}"><i class="fa fa-shield"></i> Tamper Detection</a>
+</div>
+
+<div class="content">
+    <div class="container">
+        <h1>🔍 Forensic Hash Verification Report</h1>
+
+        <!-- File Information -->
+        <div class="detail-card">
+            <h3>📁 File Information</h3>
+            <div class="detail-row">
+                <span class="detail-label">Filename:</span>
+                <span class="detail-value">{{ filename }}</span>
+            </div>
+        </div>
+
+        <!-- Integrity Status -->
+        <div class="detail-card">
+            <h3>🔐 Integrity Status</h3>
+            <div class="detail-row">
+                <span class="detail-label">Verification Result:</span>
+                <span class="detail-value">
+                    {% if "Authentic" in status %}
+                        <span class="status-authentic">{{ status }}</span>
+                    {% elif "Tampered" in status %}
+                        <span class="status-tampered">{{ status }}</span>
+                    {% else %}
+                        <span style="color: #f39c12;">{{ status }}</span>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <!-- Hash Verification -->
+        <div class="detail-card">
+            <h3>🔗 SHA-256 Hash Verification</h3>
+            
+            <div class="detail-row">
+                <span class="detail-label">Baseline Hash (Upload):</span>
+            </div>
+            <div class="hash-display">{{ baseline_hash }}</div>
+
+            <div class="detail-row" style="margin-top: 20px;">
+                <span class="detail-label">Current Hash (Verification):</span>
+            </div>
+            <div class="hash-display">{{ current_hash }}</div>
+
+            <div class="detail-row" style="margin-top: 20px;">
+                <span class="detail-label">Match Status:</span>
+                <span class="detail-value">
+                    {% if baseline_hash == current_hash %}
+                        <span class="status-authentic">✅ HASH MATCH - File Authentic</span>
+                    {% else %}
+                        <span class="status-tampered">❌ HASH MISMATCH - File Tampered</span>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <!-- Forensic Information -->
+        <div class="detail-card">
+            <h3>⚙️ Forensic Analysis</h3>
+            <div class="detail-row">
+                <span class="detail-label">Analysis Method:</span>
+                <span class="detail-value">SHA-256 Cryptographic Hash</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Hash Algorithm:</span>
+                <span class="detail-value">SHA-2 (256-bit)</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Verification Type:</span>
+                <span class="detail-value">Baseline Comparison</span>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="btn-container">
+            <a href="{{ url_for('tamper_detection') }}" class="action-btn btn-back">
+                ⬅ Back to Tamper Detection
+            </a>
+        </div>
+
+        <footer>
+            ⚙️ Dashcam Forensic Workflow — Digital Forensics & Evidence Integrity
+        </footer>
+    </div>
+</div>
+
+</body>
+</html>

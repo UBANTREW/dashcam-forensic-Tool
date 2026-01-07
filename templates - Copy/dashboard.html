@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Dashcam Footage Analysis Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            display: flex;
+        }
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: #2c3e50;
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar h2 {
+            text-align: center;
+            padding: 20px;
+            background: #1a252f;
+            margin: 0;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex: 1;
+        }
+        .sidebar ul li {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .sidebar ul li a {
+            display: block;
+            padding: 14px 20px;
+            color: #fff;
+            text-decoration: none;
+        }
+        .sidebar ul li a:hover {
+            background: #34495e;
+        }
+        .logout {
+            margin-top: auto;
+            background: #c0392b;
+            text-align: center;
+        }
+        .logout a {
+            display: block;
+            padding: 14px;
+            color: #fff;
+            text-decoration: none;
+        }
+        .logout a:hover {
+            background: #e74c3c;
+        }
+        /* Main Content */
+        .main {
+            flex: 1;
+            padding: 20px;
+        }
+        .main h1 {
+            margin: 0 0 20px;
+            font-size: 24px;
+            color: #2c3e50;
+        }
+        .modules {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .module {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .module:hover {
+            transform: translateY(-4px);
+        }
+        .module i {
+            font-size: 40px;
+            margin-bottom: 10px;
+            color: #3498db;
+        }
+        .full-width {
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <ul>
+            <li><a href="{{ url_for('upload_video') }}"><i class="fa fa-upload"></i> Upload Video</a></li>
+            <li><a href="{{ url_for('timestamp_extraction') }}"><i class="fa fa-clock"></i> Timestamp Extraction</a></li>
+            <li><a href="{{ url_for('tamper_detection') }}"><i class="fa fa-shield-halved"></i> Tamper Detection</a></li>
+            <li><a href="#"><i class="fa fa-car"></i> License Plate Recognition</a></li>
+            <li><a href="{{ url_for('report_generation') }}"><i class="fa fa-file-alt"></i> Report Generation</a></li>
+        </ul>
+        <div class="logout">
+            <a href="{{ url_for('logout') }}"><i class="fa fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+        <h1>Dashcam Footage Analysis Tool - Dashboard</h1>
+        <div class="modules">
+            <div class="module">
+                <i class="fa fa-upload"></i>
+                <h3>Upload Video</h3>
+                <a href="{{ url_for('upload_video') }}">Go</a>
+            </div>
+            <div class="module">
+                <i class="fa fa-clock"></i>
+                <h3>Timestamp Extraction</h3>
+                <a href="{{ url_for('timestamp_extraction') }}">Go</a>
+            </div>
+            <div class="module">
+                <i class="fa fa-shield-halved"></i>
+                <h3>Tamper Detection</h3>
+                <a href="{{ url_for('tamper_detection') }}">Go</a>
+            </div>
+            <div class="module">
+                <i class="fa fa-car"></i>
+                <h3>License Plate Recognition</h3>
+                <a href="#">Go</a>
+            </div>
+            <div class="module full-width">
+                <i class="fa fa-file-alt"></i>
+                <h3>Report Generation</h3>
+                <a href="{{ url_for('report_generation') }}">Go</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

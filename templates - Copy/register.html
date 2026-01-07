@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📝 Register</title>
+  <style>
+    body {
+      background: #1e1e2f;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .register-box {
+      background: #2c2f3a;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+      width: 350px;
+      color: white;
+    }
+    h2 {
+      text-align: center;
+      color: #ffcc00;
+      margin-bottom: 20px;
+    }
+    .field {
+      position: relative;
+      margin-bottom: 18px;
+    }
+    .field input {
+      width: 100%;
+      padding: 12px 12px 12px 40px;
+      border: none;
+      border-radius: 6px;
+      background: #3a3d4a;
+      color: white;
+    }
+    .field input:focus { outline: 2px solid #28a745; }
+    .field .icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9aa1b1;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      background: #28a745;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover { background: #218838; }
+    .link {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .link a { color: #007bff; text-decoration: none; font-weight: bold; }
+    .flash {
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 6px;
+      text-align: center;
+    }
+    .flash.success { background: #28a745; color: white; }
+    .flash.danger { background: #dc3545; color: white; }
+    .flash.info { background: #17a2b8; color: white; }
+  </style>
+</head>
+<body>
+  <div class="register-box">
+    <h2>📝 Create Account</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+      <div class="field">
+        <span class="icon">📧</span>
+        <input type="email" name="email" placeholder="Email Address" required>
+      </div>
+      <div class="field">
+        <span class="icon">👤</span>
+        <input type="text" name="username" placeholder="Username" required>
+      </div>
+      <div class="field">
+        <span class="icon">🔑</span>
+        <input type="password" name="password" placeholder="Password" required>
+      </div>
+      <button type="submit">Register</button>
+    </form>
+
+    <div class="link">
+      <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+    </div>
+  </div>
+</body>
+</html>

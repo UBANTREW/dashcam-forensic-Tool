@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎥 Video Viewer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f1419;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 280px;
+            height: 100vh;
+            background: #1a2332;
+            padding: 30px 20px;
+            position: fixed;
+            border-right: 3px solid #00bcd4;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px;
+            color: #ecf0f1;
+            text-decoration: none;
+            margin: 12px 0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        .sidebar a:hover {
+            background: #00bcd4;
+            color: #0f1419;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 30px;
+            left: 20px;
+            right: 20px;
+        }
+
+        .footer-text {
+            color: #00bcd4;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .footer-text p {
+            margin: 0;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .content {
+            margin-left: 320px;
+            padding: 40px;
+            width: calc(100% - 320px);
+        }
+
+        .container {
+            background: #1a2332;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        h1 {
+            color: #00bcd4;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .filename-display {
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .video-wrapper {
+            background: #0f1419;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 2px solid #00bcd4;
+        }
+
+        video {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            border-radius: 6px;
+            background: #000;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 30px;
+            border-top: 1px solid #2a3f4f;
+            padding-top: 30px;
+        }
+
+        .action-btn {
+            display: inline-block;
+            padding: 14px 30px;
+            margin: 10px 10px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: 0.3s;
+            font-size: 15px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-back {
+            background: #00bcd4;
+            color: #0f1419;
+        }
+
+        .btn-back:hover {
+            background: #00acc1;
+        }
+
+        .btn-home {
+            background: #00bcd4;
+            color: #0f1419;
+        }
+
+        .btn-home:hover {
+            background: #00acc1;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <a href="{{ url_for('dashboard') }}"><i class="fa fa-home"></i> Home</a>
+    <a href="{{ url_for('upload_video') }}"><i class="fa fa-upload"></i> Video Upload</a>
+
+    <div class="sidebar-footer">
+        <div class="footer-text">
+            Secure Dashcam Analysis
+            <p>Digital Forensics • Evidence Integrity</p>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="container">
+        <h1>🎥 Video Playback & Review</h1>
+        <p class="filename-display">📁 Now viewing: <strong>{{ filename }}</strong></p>
+
+        <div class="video-wrapper">
+            <video controls>
+                <source src="{{ url_for('view_video_file', filename=filename) }}">
+                Your browser does not support HTML5 video.
+            </video>
+        </div>
+
+        <div class="btn-container">
+            <a href="{{ url_for('upload_video') }}" class="action-btn btn-back">
+                ⬅ Back to Uploads
+            </a>
+            <a href="{{ url_for('dashboard') }}" class="action-btn btn-home">
+                🏠 Back to Home
+            </a>
+        </div>
+
+        <footer>
+            ⚙️ Dashcam Forensic Workflow — Video Playback Module
+        </footer>
+    </div>
+</div>
+
+</body>
+</html>

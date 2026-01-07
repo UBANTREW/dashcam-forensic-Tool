@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 Dashcam Tool - Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1e1e2f;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-box {
+            background: #2c2f3a;
+            padding: 30px;
+            border-radius: 12px;
+            width: 320px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #ffcc00;
+        }
+        .input-group {
+            margin: 15px 0;
+            position: relative;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px 35px;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+        }
+        .input-group i {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            color: #555;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #007bff;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #0056b3; }
+
+        .alert {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .alert-success { background: #28a745; color: white; }
+        .alert-danger { background: #dc3545; color: white; }
+        .alert-info { background: #17a2b8; color: white; }
+        a { color: #ffcc00; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h2>🔐 Dashcam Tool</h2>
+
+        <!-- ✅ Flash messages go here -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <!-- ✅ Fixed: added action to point to Flask's login route -->
+        <form method="POST" action="{{ url_for('login') }}">
+            <div class="input-group">
+                <i>👤</i>
+                <input type="text" name="username" placeholder="Username" required>
+            </div>
+            <div class="input-group">
+                <i>🔑</i>
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <button type="submit" class="btn">Login</button>
+        </form>
+
+        <p>Don't have an account? <a href="{{ url_for('register') }}">Register</a></p>
+    </div>
+
+    <script>
+      // Auto-hide flash messages after 3 seconds
+      setTimeout(() => {
+        document.querySelectorAll('.alert').forEach(el => el.style.display = 'none');
+      }, 3000);
+    </script>
+</body>
+</html>

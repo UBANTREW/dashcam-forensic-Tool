@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            background-color: #f4f4f4;
+        }
+        .sidebar {
+            width: 230px;
+            height: 100vh;
+            background: #1a237e;
+            color: white;
+            padding: 20px;
+            position: fixed;
+        }
+        .sidebar h2 {
+            margin-top: 0;
+            text-align: center;
+            font-size: 22px;
+        }
+        .sidebar a {
+            display: block;
+            padding: 12px;
+            color: white;
+            text-decoration: none;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+        .sidebar a:hover {
+            background: #283593;
+        }
+        .small-subtext {
+            font-size: 11px;
+            margin-top: 5px;
+            color: #c5cae9;
+            text-align: center;
+        }
+        .content {
+            margin-left: 260px;
+            padding: 30px;
+            width: 100%;
+        }
+        .main-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            width: 70%;
+            margin: auto;
+            margin-top: 40px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .main-card i {
+            font-size: 45px;
+            color: #1a237e;
+            margin-bottom: 15px;
+        }
+        .action-btn {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 12px 20px;
+            background: #1a237e;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+        .action-btn:hover {
+            background: #283593;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Dashboard</h2>
+
+    <a href="{{ url_for('dashboard') }}"><i class="fa fa-home"></i> Home</a>
+    <a href="{{ url_for('upload_video') }}"><i class="fa fa-upload"></i> Video Upload</a>
+    <a href="{{ url_for('timestamp_extraction') }}"><i class="fa fa-clock"></i> Timestamp Extraction</a>
+    <a href="#"><i class="fa fa-shield"></i> Tamper Detection</a>
+    <a href="#"><i class="fa fa-file"></i> Report Generation</a>
+
+    <p class="small-subtext">
+        Secure Dashcam Analysis<br>
+        Digital Forensics<br>
+        Evidence Integrity
+    </p>
+</div>
+
+<div class="content">
+
+   <div class="main-card">
+    <i class="fa fa-video"></i>
+    <h2>Dashcam Footage Analysis</h2>
+    <p>Start your analysis by uploading your dashcam footage.</p>
+
+    <!-- Upload button -->
+    <a class="action-btn" href="{{ url_for('upload_video') }}">
+        Upload Video
+    </a>
+
+    <!-- View analysis button -->
+    <a class="action-btn" href="{{ url_for('timestamp_extraction') }}" style="margin-left: 10px;">
+        View Analysis
+    </a>
+
+    <!-- FIXED: Start/Continue Analysis button INSIDE the card -->
+    {% if session.get('uploaded_video') %}
+        <a class="action-btn" href="{{ url_for('start_analysis') }}" style="margin-left: 10px; background:#0d47a1;">
+            Continue Analysis
+        </a>
+    {% else %}
+        <a class="action-btn" href="{{ url_for('start_analysis') }}" style="margin-left: 10px; background:#0d47a1;">
+            Start Analysis
+        </a>
+    {% endif %}
+</div>
+</div>
+
+</body>
+</html>
