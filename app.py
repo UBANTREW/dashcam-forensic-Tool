@@ -1206,6 +1206,9 @@ def download_report():
 # ======================================================
 #          LICENSE PLATE DETECTION
 # ======================================================
+# ======================================================
+#          LICENSE PLATE DETECTION
+# ======================================================
 @app.route("/license_plate_page", methods=["GET"])
 @login_required
 def license_plate_page():
