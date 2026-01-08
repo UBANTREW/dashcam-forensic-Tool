@@ -7,11 +7,9 @@ import sqlite3
 import hashlib
 from datetime import datetime
 from functools import wraps
-
-# COMMENT OUT FOR RAILWAY (Digital Ocean will use these)
-# import cv2
-# import pytesseract
-# from ultralytics import YOLO
+import cv2
+import pytesseract
+from ultralytics import YOLO
 
 from flask import (
     Flask,
@@ -29,6 +27,7 @@ from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 # ======================================
