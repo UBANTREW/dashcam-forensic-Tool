@@ -7,7 +7,9 @@ import sqlite3
 import hashlib
 from datetime import datetime
 from functools import wraps
-
+import cv2
+import pytesseract
+from ultralytics import YOLO
 
 from flask import (
     Flask,
@@ -1203,9 +1205,10 @@ def download_report():
 # ======================================================
 #          LICENSE PLATE DETECTION
 # ======================================================
-@app.route('/license_plate_page')
+@app.route("/license_plate_page", methods=["GET"])
+@login_required
 def license_plate_page():
-    return "License plate detection disabled on Railway. Use local version or Digital Ocean for full features."
+    """Display license plate recognition form"""
     conn = get_db()
     cur = conn.cursor()
     cur.execute("SELECT filename FROM uploads ORDER BY uploaded_at DESC")
