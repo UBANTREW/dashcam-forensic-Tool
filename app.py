@@ -7,8 +7,6 @@ import sqlite3
 import hashlib
 from datetime import datetime
 from functools import wraps
-import cv2
-import pytesseract
 
 
 from flask import (
