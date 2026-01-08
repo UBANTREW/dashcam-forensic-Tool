@@ -1,5 +1,7 @@
 # Virtual environment
 .venv/
+venv/
+env/
 
 # Uploads & generated media
 uploads/
@@ -7,19 +9,57 @@ static/uploads/
 *.mp4
 *.avi
 *.mov
+*.mkv
 
 # Generated images
 crops/
 *.jpg
 *.png
+*.jpeg
 
 # Generated text files
 timestamps*.txt
+tamper_results.txt
+
+# Database files
+*.db
+*.db-*
+*.db-journal
+dashcam.db*
+dashcam.db-*
+
+# PDF reports
+*.pdf
+forensic_report.pdf
+test_report.pdf
+
+# Environment files (keep .env.example)
+.env
+.env.local
 
 # Logs & cache
 __pycache__/
+*.pyc
+*.pyo
 *.log
+*.cache
 
 # OS files
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# YOLO model (large file)
+best.pt
+LicensePlateProject/best.pt
+
+# Temporary files
+*.tmp
+temp/
+tmp/
