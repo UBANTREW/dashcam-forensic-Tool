@@ -1421,6 +1421,26 @@ def debug_db():
         "latest_files": files
     }
 
+
+
+
+# ... your other imports and app setup ...
+
+
+    # Database initialization
+    if not os.path.exists(DB_PATH):
+        init_db_schema()
+        print("✅ Database created fresh.")
+    else:
+        print("ℹ️ Using existing database.")
+    
+    # Get port from environment
+    port = int(os.environ.get("PORT", 5000))
+    
+    # Run app
+    debug_mode = os.environ.get("DEBUG", "False") == "True"
+    app.run(host="0.0.0.0", port=port, debug=debug_mode)
+
 if __name__ == "__main__":
     if not os.path.exists(DB_PATH):
         init_db_schema()
