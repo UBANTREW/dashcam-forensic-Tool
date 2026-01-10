@@ -9,7 +9,15 @@ from datetime import datetime
 from functools import wraps
 import cv2
 import pytesseract
-from ultralytics import YOLO
+# YOLO object detection (disabled to reduce image size)
+try:
+    from ultralytics import YOLO
+    model = YOLO('yolov8n.pt')
+    YOLO_AVAILABLE = True
+except ImportError:
+    print("YOLO not available - object detection disabled")
+    model = None
+    YOLO_AVAILABLE = False
 
 from flask import (
     Flask,
