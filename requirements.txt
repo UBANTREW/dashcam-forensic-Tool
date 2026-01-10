@@ -10,6 +10,10 @@ reportlab==4.0.4
 Werkzeug==2.3.7
 Jinja2==3.1.6
 gunicorn==20.1.0
-torch==2.0.1 --index-url https://download.pytorch.org/whl/cpu
-torchvision==0.15.2 --index-url https://download.pytorch.org/whl/cpu
+
+# GUARANTEED CPU-ONLY PyTorch:
+torch==1.13.1+cpu
+torchvision==0.14.1+cpu
+
+# Add ultralytics ONLY if absolutely needed:
 # ultralytics==8.0.181
