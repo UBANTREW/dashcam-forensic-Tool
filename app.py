@@ -504,12 +504,45 @@ def delete_video(video_id):
 
 
 # ======================================================
-#        TIMESTAMP EXTRACTION
+#        TIMESTAMP EXTRACTION (WITH ERROR HANDLING)
 # ======================================================
 
 @app.route("/timestamp_extraction")
 @login_required
 def timestamp_extraction():
+    # ========== CHECK TESSERACT FIRST ==========
+    try:
+        # Set Tesseract path for Railway/Linux
+        pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
+        
+        # Quick test to verify Tesseract works
+        from PIL import Image, ImageDraw
+        test_img = Image.new('RGB', (100, 30), color='white')
+        d = ImageDraw.Draw(test_img)
+        d.text((10, 10), "TEST", fill='black')
+        pytesseract.image_to_string(test_img, config='--psm 6')
+        print("✅ Tesseract OCR is available")
+        
+    except pytesseract.pytesseract.TesseractNotFoundError:
+        # Tesseract not installed - show user-friendly error
+        return render_template(
+            "timestamp_extraction.html",
+            timestamps=["❌ Tesseract OCR not installed. Cannot extract timestamps."],
+            previews=[],
+            consistency_score=0,
+            has_drift=0,
+            estimated_speed=None,
+            speed_unit=None,
+            speed_consistency=0,
+            speed_reliability="LOW",
+            show_continue_button=True,
+            tesseract_error=True
+        )
+    except Exception as e:
+        print(f"⚠️ Tesseract warning: {e}")
+        # Continue anyway - might work for some operations
+    
+    # ========== REST OF FUNCTION ==========
     from collections import Counter
     import os, re, cv2, pytesseract
 
@@ -570,7 +603,13 @@ def timestamp_extraction():
         gray = cv2.resize(gray, None, fx=2.5, fy=2.5)
         _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
-        raw = pytesseract.image_to_string(thresh, config="--oem 3 --psm 6").strip()
+        # ===== OCR WITH ERROR HANDLING =====
+        try:
+            raw = pytesseract.image_to_string(thresh, config="--oem 3 --psm 6").strip()
+        except Exception as e:
+            print(f"OCR error for timestamp frame {idx}: {e}")
+            raw = ""
+        
         text = " ".join(raw.split())
 
         # ===== CONFIDENCE LOGIC =====
@@ -600,16 +639,20 @@ def timestamp_extraction():
             "crop_path": crop_name
         })
 
-        # ===== SPEED OCR =====
+        # ===== SPEED OCR WITH ERROR HANDLING =====
         speed_crop = frame[int(h * 0.80):h, int(w * 0.55):w]
         sg = cv2.cvtColor(speed_crop, cv2.COLOR_BGR2GRAY)
         sg = cv2.resize(sg, None, fx=2.5, fy=2.5)
         _, st = cv2.threshold(sg, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
-        speed_txt = pytesseract.image_to_string(
-            st,
-            config="--oem 3 --psm 7 -c tessedit_char_whitelist=0123456789"
-        )
+        try:
+            speed_txt = pytesseract.image_to_string(
+                st,
+                config="--oem 3 --psm 7 -c tessedit_char_whitelist=0123456789"
+            )
+        except Exception as e:
+            print(f"OCR error for speed frame {idx}: {e}")
+            speed_txt = ""
 
         m = re.search(r"\d{1,3}", speed_txt)
         if m:
@@ -688,6 +731,43 @@ def timestamp_extraction():
         speed_reliability=speed_reliability,
         show_continue_button=True
     )
+
+
+@app.route("/test_tesseract")
+def test_tesseract():
+    """Test if Tesseract OCR is working"""
+    try:
+        import pytesseract
+        pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
+        
+        from PIL import Image, ImageDraw
+        
+        # Create test image
+        img = Image.new('RGB', (300, 100), color='white')
+        d = ImageDraw.Draw(img)
+        d.text((10, 40), "2023-12-25 14:30:45", fill='black')
+        
+        # Try OCR
+        text = pytesseract.image_to_string(img, config='--psm 6')
+        
+        return jsonify({
+            "status": "success",
+            "tesseract_path": pytesseract.pytesseract.tesseract_cmd,
+            "detected_text": text.strip(),
+            "message": "Tesseract is working!"
+        })
+        
+    except pytesseract.pytesseract.TesseractNotFoundError:
+        return jsonify({
+            "status": "error",
+            "message": "Tesseract not installed. Need Dockerfile with: apt-get install tesseract-ocr",
+            "solution": "Create Dockerfile with system dependencies"
+        }), 500
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
 
 
 @app.route("/tamper_detection")
