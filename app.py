@@ -1501,6 +1501,63 @@ def debug_db():
     }
 
 
+@app.route("/debug_email")
+def debug_email():
+    """Test if email sending works on Railway"""
+    try:
+        from flask_mail import Message
+        
+        # Get your actual email from config or use a test one
+        test_email = app.config.get('MAIL_USERNAME', 'test@example.com')
+        
+        msg = Message(
+            subject="📧 Test Email from Railway App",
+            sender=app.config['MAIL_DEFAULT_SENDER'],
+            recipients=[test_email]  # Send to yourself
+        )
+        msg.body = f"""
+        This is a test email from your Dashcam Forensic Tool.
+        
+        Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+        App URL: {request.host_url}
+        
+        If you receive this, email is working!
+        """
+        
+        mail.send(msg)
+        return f"""
+        <h2>✅ Email Test Sent!</h2>
+        <p>Check your inbox: <strong>{test_email}</strong></p>
+        <p>Email config:</p>
+        <ul>
+            <li>Server: {app.config.get('MAIL_SERVER', 'Not set')}</li>
+            <li>Port: {app.config.get('MAIL_PORT', 'Not set')}</li>
+            <li>TLS: {app.config.get('MAIL_USE_TLS', 'Not set')}</li>
+            <li>From: {app.config.get('MAIL_DEFAULT_SENDER', 'Not set')}</li>
+        </ul>
+        """
+        
+    except Exception as e:
+        import traceback
+        error_details = traceback.format_exc()
+        return f"""
+        <h2>❌ Email Test Failed!</h2>
+        <p>Error: <strong>{str(e)}</strong></p>
+        <h3>Debug Info:</h3>
+        <pre>{error_details}</pre>
+        <h3>Current Config:</h3>
+        <ul>
+            <li>MAIL_SERVER: {app.config.get('MAIL_SERVER', 'NOT SET')}</li>
+            <li>MAIL_PORT: {app.config.get('MAIL_PORT', 'NOT SET')}</li>
+            <li>MAIL_USE_TLS: {app.config.get('MAIL_USE_TLS', 'NOT SET')}</li>
+            <li>MAIL_USERNAME: {app.config.get('MAIL_USERNAME', 'NOT SET')}</li>
+            <li>MAIL_PASSWORD: {'SET' if app.config.get('MAIL_PASSWORD') else 'NOT SET'}</li>
+        </ul>
+        """
+
+
+
+
 
 
 # ... your other imports and app setup ...
