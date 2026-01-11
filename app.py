@@ -609,8 +609,16 @@ def timestamp_extraction():
         gray = cv2.resize(gray, None, fx=2.5, fy=2.5)
         _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
-        # ===== OCR WITH ERROR HANDLING =====
+            # ===== OCR WITH ERROR HANDLING =====
         try:
+            import easyocr
+            reader = easyocr.Reader(['en'])
+            result = reader.readtext(thresh)
+            if result:
+                raw = result[0][1]  # Get the detected text
+            else:
+                raw = ""
+        except ImportError:
             raw = pytesseract.image_to_string(thresh, config="--oem 3 --psm 6").strip()
         except Exception as e:
             print(f"OCR error for timestamp frame {idx}: {e}")
@@ -645,13 +653,21 @@ def timestamp_extraction():
             "crop_path": crop_name
         })
 
-        # ===== SPEED OCR WITH ERROR HANDLING =====
+               # ===== SPEED OCR WITH ERROR HANDLING =====
         speed_crop = frame[int(h * 0.80):h, int(w * 0.55):w]
         sg = cv2.cvtColor(speed_crop, cv2.COLOR_BGR2GRAY)
         sg = cv2.resize(sg, None, fx=2.5, fy=2.5)
         _, st = cv2.threshold(sg, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
         try:
+            import easyocr
+            reader = easyocr.Reader(['en'])
+            result = reader.readtext(st)
+            if result:
+                speed_txt = result[0][1]  # Get the detected text
+            else:
+                speed_txt = ""
+        except ImportError:
             speed_txt = pytesseract.image_to_string(
                 st,
                 config="--oem 3 --psm 7 -c tessedit_char_whitelist=0123456789"
@@ -663,8 +679,6 @@ def timestamp_extraction():
         m = re.search(r"\d{1,3}", speed_txt)
         if m:
             speed_results.append(int(m.group()))
-
-    cap.release()
 
     # ========== FINAL TIMESTAMP ==========
     valid = [r["text"] for r in ocr_results if r["text"] != "No text detected"]
