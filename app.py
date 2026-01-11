@@ -502,7 +502,6 @@ def delete_video(video_id):
     return redirect(url_for("upload_video"))
 
 
-
 # ======================================================
 #        TIMESTAMP EXTRACTION (WITH ERROR HANDLING)
 # ======================================================
@@ -512,8 +511,15 @@ def delete_video(video_id):
 def timestamp_extraction():
     # ========== CHECK TESSERACT FIRST ==========
     try:
-        # Set Tesseract path for Railway/Linux
-        pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
+        # Import pytesseract FIRST
+        import pytesseract
+        
+        # Set Tesseract path based on OS
+        import os
+        if os.name == 'nt':  # Windows
+            pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+        else:  # Linux/Mac
+            pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
         
         # Quick test to verify Tesseract works
         from PIL import Image, ImageDraw
@@ -544,7 +550,7 @@ def timestamp_extraction():
     
     # ========== REST OF FUNCTION ==========
     from collections import Counter
-    import os, re, cv2, pytesseract
+    import os, re, cv2
 
     UP = app.config["UPLOAD_FOLDER"]
     CF = app.config["CROP_FOLDER"]
@@ -731,43 +737,6 @@ def timestamp_extraction():
         speed_reliability=speed_reliability,
         show_continue_button=True
     )
-
-
-@app.route("/test_tesseract")
-def test_tesseract():
-    """Test if Tesseract OCR is working"""
-    try:
-        import pytesseract
-        pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
-        
-        from PIL import Image, ImageDraw
-        
-        # Create test image
-        img = Image.new('RGB', (300, 100), color='white')
-        d = ImageDraw.Draw(img)
-        d.text((10, 40), "2023-12-25 14:30:45", fill='black')
-        
-        # Try OCR
-        text = pytesseract.image_to_string(img, config='--psm 6')
-        
-        return jsonify({
-            "status": "success",
-            "tesseract_path": pytesseract.pytesseract.tesseract_cmd,
-            "detected_text": text.strip(),
-            "message": "Tesseract is working!"
-        })
-        
-    except pytesseract.pytesseract.TesseractNotFoundError:
-        return jsonify({
-            "status": "error",
-            "message": "Tesseract not installed. Need Dockerfile with: apt-get install tesseract-ocr",
-            "solution": "Create Dockerfile with system dependencies"
-        }), 500
-    except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": str(e)
-        }), 500
 
 
 @app.route("/tamper_detection")
@@ -1290,9 +1259,7 @@ def download_report():
     return redirect(url_for("report_generation"))
 
 
-# ======================================================
-#          LICENSE PLATE DETECTION
-# ======================================================
+
 # ======================================================
 #          LICENSE PLATE DETECTION
 # ======================================================
@@ -1313,6 +1280,16 @@ def license_plate_page():
 @login_required
 def process_license_plate():
     """Process video for license plate detection"""
+    # IMPORT ALL NEEDED MODULES
+    import os
+    import cv2
+    import re
+    import json
+    from datetime import datetime
+    from werkzeug.utils import secure_filename
+    from ultralytics import YOLO
+    import pytesseract
+    
     selected_filename = request.form.get("video")
     uploaded_file = request.files.get("file")
 
@@ -1348,8 +1325,23 @@ def process_license_plate():
         flash("No video selected or uploaded.", "danger")
         return redirect(url_for("license_plate_page"))
 
-    # YOLO + OCR processing
-    model = YOLO("best.pt")
+    # YOLO + OCR processing - AUTO DOWNLOAD IF MISSING
+    try:
+        # First try to load your custom model
+        model = YOLO("best.pt")
+    except FileNotFoundError:
+        # If custom model not found, use YOLOv8n which auto-downloads
+        print("⚠️ 'best.pt' not found. Using YOLOv8n (auto-downloads)...")
+        model = YOLO("yolov8n.pt")
+    except Exception as e:
+        flash(f"YOLO initialization failed: {str(e)}", "danger")
+        return redirect(url_for("license_plate_page"))
+
+    # Set Tesseract path for OCR
+    if os.name == 'nt':  # Windows
+        pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+    else:  # Linux/Mac
+        pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
 
     cap = cv2.VideoCapture(video_path)
     best_result = None
@@ -1477,7 +1469,6 @@ def process_license_plate():
         confidence=0,
         error="No license plate detected in the video."
     )
-
 
 # ======================================================
 #                RUN APP (SINGLE MAIN BLOCK)
